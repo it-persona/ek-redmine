@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Projects list{% endblock %}
+
+{% block container %}
+    <main role="main" class="container">
+        <div class="album py-5 bg-light">
+            <div class="container">
+                <h2>Project list</h2><hr>
+                <div class="row">
+                    {% for project in projects %}
+                        <div class="col-md-4">
+                            <div class="card mb-4">
+                                <div class="mb-0" style="padding: 20px 20px 0 20px;">
+                                    <h3>
+                                        <a class="text-dark" href="{{ path('issues', {'id': project.id}) }}">
+                                            {{ project.name }}
+                                        </a>
+                                    </h3>
+                                    <small class="text-muted">
+                                        ID:{{ project.id }} Total issues: 9
+                                    </small>
+                                    <hr>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text {{ (project.description|trim|length) ? '' : 'text-muted' }}">
+                                        {{ (project.description|trim|length)
+                                            ? project.description
+                                            : 'Empty description for this project'
+                                        }}
+                                    </p>
+                                    <p class="text-right">
+                                        <a class="btn btn-info" href="{{ path('issues', {'id': project.id}) }}"
+                                           role="button">
+                                            View issues »
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Homepage{% endblock %}
+
+{% block container %}
+    <main role="main">
+        <div class="jumbotron">
+            <div class="container">
+                <h1 class="display-3">Redmine integration</h1>
+                <p>Website, in Symfony, that helps integration with Redmine.</p>
+                <p><strong>Features</strong></p>
+                <p>1. Show a list of projects</p>
+                <p>2. Show a list of issues per project</p>
+                <p>3. Track time per project, or per issue. This should happen within Redmine.</p>
+                <p>
+                    4. Comment on projects. This should happen within the Symfony site. It should not post these comments
+                    back to Redmine, rather have a database that stores and shows them.
+                </p>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h2>Projects</h2>
+                    <p>Get and show a list of projects get from Redmine API</p>
+                    <p><a class="btn btn-success" href="{{ path('projects') }}" role="button">View details »</a></p>
+                </div>
+                <div class="col-md-4">
+                    <h2>Issues</h2>
+                    <p>Get and show a list of issues per project from Redmine API</p>
+                    <p><a class="btn btn-success" href="{{ path('projects') }}" role="button">View details »</a></p>
+                </div>
+                <div class="col-md-4">
+                    <h2>Track time</h2>
+                    <p>Track time per project, or per issue. This should happen within Redmine.</p>
+                    <p><a class="btn btn-success" href="#" role="button">View details »</a></p>
+                </div>
+            </div>
+            <hr>
+        </div>
+    </main>
+{% endblock %}
