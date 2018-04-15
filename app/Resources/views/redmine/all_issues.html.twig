@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Issues{% endblock %}
+
+{% block container %}
+    <main role="main" class="container">
+        <div class="album py-5 bg-light">
+            <div class="container">
+                <h2>Issues</h2>
+                <div class="row">
+                    <table class="table table-striped table-hover small" style="margin: 20px;">
+                        <caption>({{ (total_count > 0) ? 'Total issues: ' ~ total_count : '0' }})</caption>
+                        <thead>
+                        <tr class="text-center">
+                            <th scope="col">#</th>
+                            <th scope="col">Project</th>
+                            <th scope="col">Tracker</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Priority</th>
+                            <th scope="col">Subject</th>
+                            <th scope="col">Author</th>
+                            <th scope="col">Assignee</th>
+                            <th scope="col">Updated</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for issue in issues %}
+                                <tr class="text-center">
+                                    <th scope="row">
+                                        <a class="text-dark" href="{{ path('issues', {'id': issue.project.id}) }}">{{ issue.id }}</a></th>
+                                    <td>
+                                        <a class="text-dark" href="{{ path('issues', {'id': issue.project.id}) }}">
+                                            {{ (issue.project is defined) ? issue.project.name : ''}}
+                                        </a>
+                                    </td>
+                                    <td>{{ (issue.tracker is defined) ? issue.tracker.name : '' }}</td>
+                                    <td>{{ (issue.status is defined) ? issue.status.name : '' }}</td>
+                                    <td>{{ (issue.priority is defined) ? issue.priority.name : '' }}</td>
+                                    <td>
+                                        <a class="text-dark" href="{{ path('issues', {'id': issue.project.id}) }}">
+                                            {{ (issue.subject is defined) ? issue.subject : '' }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a class="text-dark" href="{{ path('issues', {'id': issue.project.id}) }}">
+                                            {{ (issue.author is defined) ? issue.author.name : '' }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a class="text-dark" href="{{ path('issues', {'id': issue.project.id}) }}">
+                                            {{ (issue.assigned_to is defined) ? issue.assigned_to.name : '' }}
+                                        </a>
+                                    </td>
+                                    <td>{{ (issue.updated_on is defined) ? issue.updated_on|date() : '' }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

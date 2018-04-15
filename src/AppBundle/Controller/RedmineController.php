@@ -2,28 +2,31 @@
 
 namespace AppBundle\Controller;
 
-use Johnstyle\RedmineBundle\Service\RedmineClient;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 class RedmineController extends Controller
 {
     /**
+     * @var array
+     */
+    private $issues;
+
+    /**
      * @Route("/", name="homepage")
      * @Template(":default:index.html.twig")
      */
-    public function indexAction()
+    public function indexAction(): array
     {
-        return null;
+        return [];
     }
 
     /**
      * @Route("/projects", name="projects")
      * @Template(":redmine:projects.html.twig")
      */
-    public function projectsAction()
+    public function projectsAction(): array
     {
         $data = $this->getClient()->project->all();
 
@@ -33,10 +36,24 @@ class RedmineController extends Controller
     }
 
     /**
+     * @Route("/issues", name="all_issues")
+     * @Template(":redmine:all_issues.html.twig")
+     */
+    public function allIssuesAction(): array
+    {
+        $issues = $this->getClient()->issue->all();
+
+        return [
+            'issues'      => $issues['issues'],
+            'total_count' => $issues['total_count']
+        ];
+    }
+
+    /**
      * @Route("/project/{id}/issues", name="issues")
      * @Template(":redmine:issues.html.twig")
      */
-    public function issuesAction($id)
+    public function issuesAction($id): array
     {
         $issues = $this->getIssuesByProjectId($id);
 
@@ -46,14 +63,22 @@ class RedmineController extends Controller
     }
 
     /**
+     * Helper method for get a redmine client from service container
+     *
      * @return \Redmine\Client
      */
-    private function getClient()
+    private function getClient(): \Redmine\Client
     {
         return $this->container->get('johnstyle.redmine_client')->client();
     }
 
-    private function getIssuesByProjectId($id)
+    /**
+     * Get a issues list by project_id
+     *
+     * @param $id
+     * @return array
+     */
+    private function getIssuesByProjectId($id): array
     {
         if ($id) {
             $this->issues = $this->getClient()->issue->all(['project_id' => $id]);
