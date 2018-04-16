@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Comment show{% endblock %}
+
+{% block container %}
+    <h1>Comment</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ comment.id }}</td>
+            </tr>
+            <tr>
+                <th>Text</th>
+                <td>{{ comment.text }}</td>
+            </tr>
+            <tr>
+                <th>Projectid</th>
+                <td>{{ comment.projectId }}</td>
+            </tr>
+            <tr>
+                <th>Isverified</th>
+                <td>{% if comment.isVerified %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Publishedat</th>
+                <td>{% if comment.publishedAt %}{{ comment.publishedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('user_comment_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('user_comment_edit', { 'id': comment.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}
