@@ -2,17 +2,15 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Form\TimeEntryType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 class RedmineController extends Controller
 {
-    /**
-     * @var array
-     */
-    private $issues;
-
     /**
      * @Route("/", name="homepage")
      * @Template(":default:index.html.twig")
@@ -28,7 +26,15 @@ class RedmineController extends Controller
      */
     public function projectsAction(): array
     {
-        $data = $this->getClient()->project->all();
+        $data = $this->container->get('app.bundle.redmine_helper')->getClient()->project->all();
+
+        if (isset($data['projects'])) {
+            foreach ($data['projects'] as $key => $project) {
+                $issues = $this->container->get('app.bundle.redmine_helper')->getIssuesByProjectId($project['id']);
+                $attr['total_count'] = (isset($issues['total_count']) ? $issues['total_count'] : 0);
+                $data['projects'][$key] += $attr;
+            }
+        }
 
         return [
             'projects' => $data['projects']
@@ -41,7 +47,7 @@ class RedmineController extends Controller
      */
     public function allIssuesAction(): array
     {
-        $issues = $this->getClient()->issue->all();
+        $issues = $this->container->get('app.bundle.redmine_helper')->getClient()->issue->all();
 
         return [
             'issues'      => $issues['issues'],
@@ -55,35 +61,55 @@ class RedmineController extends Controller
      */
     public function issuesAction($id): array
     {
-        $issues = $this->getIssuesByProjectId($id);
+        if (isset($id) && $id > 0) {
+            $issues = $this->container->get('app.bundle.redmine_helper')->getIssuesByProjectId($id);
+            $project = $this->container->get('app.bundle.redmine_helper')->getClient()->project->show($id);
+        }
 
         return [
-            'issues' => $issues
+            'issues'  => (isset($issues)) ? $issues : null,
+            'project' => (isset($project)) ? $project : null
         ];
     }
 
     /**
-     * Helper method for get a redmine client from service container
+     * @Template(":redmine:new_activity.html.twig")
+     * @Route("/activity/new", name="new-activity")
+     * @Method(methods={"GET", "POST"})
      *
-     * @return \Redmine\Client
+     * @param Request $request
+     * @param array $data
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @throws \Exception
      */
-    private function getClient(): \Redmine\Client
+    public function newTimeEntryAction(Request $request, $data = [])
     {
-        return $this->container->get('johnstyle.redmine_client')->client();
-    }
+        $data += ['activities' => $this->container->get('app.bundle.redmine_helper')->getTimeEntryActivities()];
+        $data += ['projects' => $this->container->get('app.bundle.redmine_helper')->getProjects()];
+        $data += ['issues' => $this->container->get('app.bundle.redmine_helper')->getIssues()];
 
-    /**
-     * Get a issues list by project_id
-     *
-     * @param $id
-     * @return array
-     */
-    private function getIssuesByProjectId($id): array
-    {
-        if ($id) {
-            $this->issues = $this->getClient()->issue->all(['project_id' => $id]);
+        $form = $this->createForm(TimeEntryType::class, $data);
+        $form->handleRequest($request);
+
+        if ($request->isMethod('POST')) {
+            if ($form->isValid()) {
+                $submit = $form->getData();
+                $td = $submit;
+                $this->container->get('app.bundle.redmine_helper')->getClient()->time_entry
+                    ->create([
+                        'project_id'  => $submit['project'],
+                        'issue_id'    => $submit['issue'],
+                        'hours'       => $submit['hours'],
+                        'activity_id' => $submit['activity'],
+                        'comments'    => $submit['comment'],
+                    ]);
+
+                return $this->redirect($this->generateUrl('homepage'));
+            }
         }
 
-        return $this->issues;
+        return [
+            'form' => $form->createView()
+        ];
     }
 }

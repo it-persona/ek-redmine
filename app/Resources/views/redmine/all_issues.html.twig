@@ -27,7 +27,8 @@
                             {% for issue in issues %}
                                 <tr class="text-center">
                                     <th scope="row">
-                                        <a class="text-dark" href="{{ path('issues', {'id': issue.project.id}) }}">{{ issue.id }}</a></th>
+                                        <a class="text-dark" href="{{ path('issues', {'id': issue.project.id}) }}">{{ issue.id }}</a>
+                                    </th>
                                     <td>
                                         <a class="text-dark" href="{{ path('issues', {'id': issue.project.id}) }}">
                                             {{ (issue.project is defined) ? issue.project.name : ''}}

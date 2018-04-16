@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Projects list{% endblock %}
+{% block title %}Projects{% endblock %}
 
 {% block container %}
     <main role="main" class="container">
@@ -9,17 +9,22 @@
                 <h2>Project list</h2>
                 <hr>
                 <div class="row">
+
+                    {#
+                       todo: add time track implementation by project_id or issue_id
+                    #}
+
                     {% for project in projects %}
                         <div class="col-md-4">
                             <div class="card mb-4">
                                 <div class="mb-0" style="padding: 20px 20px 0 20px;">
-                                    <h3>
+                                    <h3>👁
                                         <a class="text-dark" href="{{ path('issues', {'id': project.id}) }}">
                                             {{ project.name }}
                                         </a>
                                     </h3>
                                     <small class="text-muted">
-                                        ID:{{ project.id }} Total issues: 9
+                                        ID:{{ project.id }} Total issues: {{ project.total_count }}
                                     </small>
                                     <hr>
                                 </div>
@@ -31,9 +36,9 @@
                                         }}
                                     </p>
                                     <p class="text-right">
-                                        <a class="btn btn-info" href="{{ path('issues', {'id': project.id}) }}"
-                                           role="button">
-                                            View issues »
+                                        <a class="btn btn-info btn-sm"
+                                           href="{{ path('issues', {'id': project.id}) }}" role="button">
+                                            View issues ‣
                                         </a>
                                     </p>
                                 </div>

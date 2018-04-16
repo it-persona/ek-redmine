@@ -1,19 +1,81 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Issues{% endblock %}
+{% block custom_styles %}
+    <style>
+        .large-text {
+            font-size: xx-large;
+        }
+    </style>
+{% endblock %}
+
+{% set current_project = project.project %}
+
+{% block title %}Issues - {{ current_project.name }}{% endblock %}
 
 {% block container %}
     <main role="main" class="container">
         <div class="album py-5 bg-light">
             <div class="container">
                 <h2>Issues</h2>
+                <p class="text-muted">{{ current_project.name }} ({{ current_project.identifier }})</p>
                 <hr>
-                <div class="row">
-                    {% for issue in issues %}
-                        {# todo: render a list of issues by project_id #}
-                        {{ dump(issue) }}
-                    {%  endfor %}
-                </div>
+                {% if (issues.issues is defined) %}
+                    <div class="text-right">
+                        <a class="btn btn-danger btn-sm"
+                           href="#" role="button">
+                            Log time ‣
+                        </a>
+                    </div>
+                    <div class="row">
+                        <table class="table table-striped table-hover small" style="margin: 20px;">
+                            <caption>
+                                ({{
+                                    (issues.total_count is defined and issues.total_count > 0)
+                                        ? 'Total issues: ' ~ issues.total_count : '0'
+                                }})
+                            </caption>
+                            <thead>
+                            <tr class="text-center">
+                                <th scope="col">#</th>
+                                <th scope="col">Tracker</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Priority</th>
+                                <th scope="col">Subject</th>
+                                <th scope="col">Author</th>
+                                <th scope="col">Assignee</th>
+                                <th scope="col">Updated</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {#
+                                todo: add time track implementation by project_id or issue_id
+                            #}
+
+                            {% for issue in issues.issues %}
+                                <tr class="text-center">
+                                    <th scope="row">{{ issue.id }}</th>
+                                    <td>{{ (issue.tracker is defined) ? issue.tracker.name : '' }}</td>
+                                    <td>{{ (issue.status is defined) ? issue.status.name : '' }}</td>
+                                    <td>{{ (issue.priority is defined) ? issue.priority.name : '' }}</td>
+                                    <td>{{ (issue.subject is defined) ? issue.subject : '' }}</td>
+                                    <td>{{ (issue.author is defined) ? issue.author.name : '' }}</td>
+                                    <td>{{ (issue.assigned_to is defined) ? issue.assigned_to.name : '' }}</td>
+                                    <td>{{ (issue.updated_on is defined) ? issue.updated_on|date() : '' }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="row justify-content-center">
+                        <p class="large-text text-muted">😞
+                            <strong class="text-center text-muted small">
+                                No issues for this project
+                            </strong>
+                        </p>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </main>
