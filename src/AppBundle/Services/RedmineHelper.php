@@ -101,4 +101,18 @@ class RedmineHelper
 
         return $stack;
     }
+
+    /**
+     * @param $text
+     * @param int $limit
+     * @return string
+     */
+    public function textLimiter($text, $limit = 255): string
+    {
+        if (strlen($text) > $limit) {
+            $text = substr($text, 0, strrpos(substr($text, 0, $limit), ' ')) . '...';
+        }
+
+        return $text;
+    }
 }

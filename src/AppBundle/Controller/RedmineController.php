@@ -42,7 +42,7 @@ class RedmineController extends Controller
     }
 
     /**
-     * @Route("/issues", name="all_issues")
+     * @Route("/issues", name="all-issues")
      * @Template(":redmine:all_issues.html.twig")
      */
     public function allIssuesAction(): array
@@ -84,6 +84,8 @@ class RedmineController extends Controller
      */
     public function newTimeEntryAction(Request $request, $data = [])
     {
+        $query = $request->query->all();
+
         $data += ['activities' => $this->container->get('app.bundle.redmine_helper')->getTimeEntryActivities()];
         $data += ['projects' => $this->container->get('app.bundle.redmine_helper')->getProjects()];
         $data += ['issues' => $this->container->get('app.bundle.redmine_helper')->getIssues()];
@@ -94,14 +96,16 @@ class RedmineController extends Controller
         if ($request->isMethod('POST')) {
             if ($form->isValid()) {
                 $submit = $form->getData();
-                $td = $submit;
+                $limitedComment = $this->container->get('app.bundle.redmine_helper')
+                    ->textLimiter($submit['comment']);
+
                 $this->container->get('app.bundle.redmine_helper')->getClient()->time_entry
                     ->create([
                         'project_id'  => $submit['project'],
                         'issue_id'    => $submit['issue'],
                         'hours'       => $submit['hours'],
                         'activity_id' => $submit['activity'],
-                        'comments'    => $submit['comment'],
+                        'comments'    => $limitedComment,
                     ]);
 
                 return $this->redirect($this->generateUrl('homepage'));
@@ -109,7 +113,9 @@ class RedmineController extends Controller
         }
 
         return [
-            'form' => $form->createView()
+            'project_id' => ($query && array_key_exists('project_id', $query)) ? $query['project_id'] : '',
+            'issue_id'   => ($query && array_key_exists('issue_id', $query)) ? $query['issue_id'] : '',
+            'form'       => $form->createView(),
         ];
     }
 }
