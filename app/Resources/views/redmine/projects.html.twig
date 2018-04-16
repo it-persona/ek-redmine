@@ -38,7 +38,11 @@
                                     <p class="text-right">
                                         <a class="btn btn-info btn-sm"
                                            href="{{ path('issues', {'id': project.id}) }}" role="button">
-                                            View issues ‣
+                                            View issues
+                                        </a>
+                                        <a class="btn btn-danger btn-sm"
+                                           href="{{ path('new-activity', {'project_id': project.id}) }}" role="button">
+                                            Log time ‣
                                         </a>
                                     </p>
                                 </div>

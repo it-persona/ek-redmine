@@ -19,36 +19,36 @@
 {% block container %}
     <main role="main">
         <div class="jumbotron-wrapper">
-        <div class="jumbotron">
-            <div class="container text-white">
-                <h1 class="display-3">Redmine integration</h1>
-                <p><strong>Features</strong></p>
-                <p>1. Show a list of projects</p>
-                <p>2. Show a list of issues per project</p>
-                <p>3. Track time per project, or per issue. This should happen within Redmine.</p>
-                <p>
-                    4. Comment on projects. This should happen within the Symfony site. It should not post these comments
-                    back to Redmine, rather have a database that stores and shows them.
-                </p>
+            <div class="jumbotron">
+                <div class="container text-white">
+                    <h1 class="display-3">Redmine integration</h1>
+                    <p><strong>Features</strong></p>
+                    <p>1. Show a list of projects</p>
+                    <p>2. Show a list of issues per project</p>
+                    <p>3. Track time per project, or per issue. This should happen within Redmine.</p>
+                    <p>
+                        4. Comment on projects. This should happen within the Symfony site. It should not post these comments
+                        back to Redmine, rather have a database that stores and shows them.
+                    </p>
+                </div>
             </div>
-        </div>
         </div>
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
                     <h2>Projects</h2>
                     <p>Get and show a list of projects get from Redmine API</p>
-                    <p><a class="btn btn-success" href="{{ path('projects') }}" role="button">View details ‣</a></p>
+                    <p><a class="btn btn-success" href="{{ path('projects') }}" role="button">View projects</a></p>
                 </div>
                 <div class="col-md-4">
                     <h2>Issues</h2>
                     <p>Get and show a list of issues per project from Redmine API</p>
-                    <p><a class="btn btn-success" href="{{ path('all_issues') }}" role="button">View details ‣</a></p>
+                    <p><a class="btn btn-success" href="{{ path('all-issues') }}" role="button">View issues</a></p>
                 </div>
                 <div class="col-md-4">
                     <h2>Track time</h2>
                     <p>Track time per project, or per issue. This should happen within Redmine.</p>
-                    <p><a class="btn btn-success" href="#" role="button">View details ‣</a></p>
+                    <p><a class="btn btn-success" href="{{ path('new-activity') }}" role="button">Log time</a></p>
                 </div>
             </div>
             <hr>
