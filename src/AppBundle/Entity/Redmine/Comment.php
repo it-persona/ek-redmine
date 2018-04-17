@@ -24,6 +24,13 @@ class Comment
     /**
      * @var string
      *
+     * @ORM\Column(name="username", type="string")
+     */
+    private $username;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="text", type="text")
      */
     private $text;
@@ -62,6 +69,30 @@ class Comment
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set username
+     *
+     * @param $username
+     *
+     * @return Comment
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * Get username
+     *
+     * @return string
+     */
+    public function getUsername()
+    {
+        return $this->username;
     }
 
     /**

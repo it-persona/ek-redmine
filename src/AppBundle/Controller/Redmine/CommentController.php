@@ -3,10 +3,10 @@
 namespace AppBundle\Controller\Redmine;
 
 use AppBundle\Entity\Redmine\Comment;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
-
 /**
  * Comment controller.
  *
@@ -17,50 +17,47 @@ class CommentController extends Controller
     /**
      * Lists all comment entities.
      *
-     * @Route("/", name="user_comment_index")
-     * @Method("GET")
-     */
-    public function indexAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $comments = $em->getRepository('AppBundle:Redmine\Comment')->findAll();
-
-        return $this->render('redmine/comment/index.html.twig', array(
-            'comments' => $comments,
-        ));
-    }
-
-    /**
-     * Creates a new comment entity.
-     *
-     * @Route("/new", name="user_comment_new")
+     * @Route("/{project_id}", name="project_comments")
      * @Method({"GET", "POST"})
+     *
+     * @param Request $request
+     * @param $project_id
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function newAction(Request $request)
+    public function indexAction(Request $request, $project_id)
     {
         $comment = new Comment();
+        $comment->setProjectId($project_id);
+        $comment->setUsername($this->getUser()->getUsername());
+
         $form = $this->createForm('AppBundle\Form\Redmine\CommentType', $comment);
         $form->handleRequest($request);
+
+        $em = $this->getDoctrine()->getManager();
+
+        $comments = $em->getRepository('AppBundle:Redmine\Comment')->findBy(['projectId' => $project_id]);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($comment);
             $em->flush();
 
-            return $this->redirectToRoute('user_comment_show', array('id' => $comment->getId()));
+            return $this->redirectToRoute('project_comments', array('project_id' => $comment->getProjectId()));
         }
 
-        return $this->render('redmine/comment/new.html.twig', array(
+        return $this->render('redmine/comment/index.html.twig', array(
             'comment' => $comment,
             'form' => $form->createView(),
+            'comments' => $comments,
+            'project_id' => $project_id,
         ));
     }
 
     /**
      * Finds and displays a comment entity.
      *
-     * @Route("/{id}", name="user_comment_show")
+     * @Route("/{id}/show", name="user_comment_show")
      * @Method("GET")
      */
     public function showAction(Comment $comment)

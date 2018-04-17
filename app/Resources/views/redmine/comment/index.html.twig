@@ -1,47 +1,49 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Comments list{% endblock %}
+{% block title %}Comments{% endblock %}
 
 {% block container %}
-    <h1>Comments list</h1>
+    <main role="main" class="container">
+        <div class="album py-5 bg-light">
+            <div class="container">
+                <h3>Comments</h3>
+                <hr>
+                {{ form_start(form) }}
+                <div class="form-group row">
+                    <div class="col-sm-12">
+                        {{ form_widget(form.text, { 'attr': { 'class': 'form-control', 'rows': '5' } }) }}
+                    </div>
+                    {{ form_widget(form.publishedAt, { 'attr': { 'hidden': 'hidden' } }) }}
+                    {{ form_widget(form.projectId, { 'attr': { 'hidden': 'hidden' } }) }}
+                    {{ form_widget(form.isVerified, { 'attr': { 'hidden': 'hidden' } }) }}
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-success btn-lg btn-block" type="submit">Create</button>
+                </div>
+                {{ form_end(form) }}
+                <hr>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Text</th>
-                <th>Projectid</th>
-                <th>Isverified</th>
-                <th>Publishedat</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for comment in comments %}
-            <tr>
-                <td><a href="{{ path('user_comment_show', { 'id': comment.id }) }}">{{ comment.id }}</a></td>
-                <td>{{ comment.text }}</td>
-                <td>{{ comment.projectId }}</td>
-                <td>{% if comment.isVerified %}Yes{% else %}No{% endif %}</td>
-                <td>{% if comment.publishedAt %}{{ comment.publishedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>
-                    <ul>
-                        <li>
-                            <a href="{{ path('user_comment_show', { 'id': comment.id }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('user_comment_edit', { 'id': comment.id }) }}">edit</a>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <ul>
-        <li>
-            <a href="{{ path('user_comment_new') }}">Create a new comment</a>
-        </li>
-    </ul>
+                {% if comments|length %}
+                    {% for comment in comments %}
+                        <div class="card" style="margin-bottom: 10px;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ comment.username }}</h5><hr>
+                                <p class="card-text">{{ comment.text|raw }}</p>
+                            </div>
+                            <div class="card-footer text-muted">
+                                <small>{{ comment.publishedAt|date }}</small>
+                            </div>
+                        </div>
+                        <hr>
+                    {% endfor %}
+                {% endif %}
+                <div class="text-right">
+                    <a class="btn btn-info btn-sm" role="button" href="{{ path('projects') }}">
+                        Back to projects
+                    </a>
+                </div>
+                <hr>
+            </div>
+        </div>
+    </main>
 {% endblock %}

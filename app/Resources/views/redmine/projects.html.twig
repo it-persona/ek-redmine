@@ -9,11 +9,6 @@
                 <h2>Project list</h2>
                 <hr>
                 <div class="row">
-
-                    {#
-                       todo: add time track implementation by project_id or issue_id
-                    #}
-
                     {% for project in projects %}
                         <div class="col-md-4">
                             <div class="card mb-4">
@@ -36,6 +31,10 @@
                                         }}
                                     </p>
                                     <p class="text-right">
+                                        <a class="btn btn-success btn-sm"
+                                           href="{{ path('project_comments', {'project_id': project.id}) }}" role="button">
+                                            Comments
+                                        </a>
                                         <a class="btn btn-info btn-sm"
                                            href="{{ path('issues', {'id': project.id}) }}" role="button">
                                             View issues

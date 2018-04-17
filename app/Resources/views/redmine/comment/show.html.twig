@@ -32,7 +32,7 @@
 
     <ul>
         <li>
-            <a href="{{ path('user_comment_index') }}">Back to the list</a>
+            <a href="{{ path('project_comments', { 'project_id': comment.projectId }) }}">Back to the list</a>
         </li>
         <li>
             <a href="{{ path('user_comment_edit', { 'id': comment.id }) }}">Edit</a>
