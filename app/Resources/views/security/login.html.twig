@@ -2,20 +2,28 @@
 
 {% block title %}Login{% endblock %}
 
+{% block custom_styles %}
+    <link href="{{ asset('bundles/app/css/signin.css') }}" rel="stylesheet">
+{% endblock %}
+
 {% block container %}
     <main role="main" style="margin-top: 100px;">
         {% if error %}
             <div>{{ error.message }}</div>
         {% endif %}
 
-        <form action="{{ path('login') }}" method="post">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="_username" value="{{ last_username }}" />
-
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="_password" />
-
-            <button type="submit">login</button>
+        <form class="form-signin" action="{{ path('login') }}" method="post">
+            <img class="mb-4" src="./Signin Template for Bootstrap_files/bootstrap-solid.svg" alt="" width="72" height="72">
+            <label for="username" class="sr-only">Username</label>
+            <input type="text" id="username" name="_username" class="form-control" placeholder="Username" required="" autofocus="">
+            <label for="password" class="sr-only">Password</label>
+            <input type="password" id="password" name="_password" class="form-control" placeholder="Password" required="">
+            <div class="checkbox mb-3">
+                <label>
+                    <input type="checkbox" value="remember-me"> Remember me
+                </label>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
         </form>
     </main>
 {% endblock %}
